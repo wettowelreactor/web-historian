@@ -37,7 +37,6 @@ exports.readListOfUrls = function(cb){
 
 exports.isUrlInList = function(url, cb){
   exports.readListOfUrls(function(list){
-    console.log('inside first cb', list);
     if ( list.indexOf(url) > -1 ) {
       return cb(true);
     } else {
@@ -47,9 +46,13 @@ exports.isUrlInList = function(url, cb){
 };
 
 exports.addUrlToList = function(url){
-  fs.appendFile(exports.paths.list, url + '\n', function(err, data) {
-    if (err) console.log(err);
-    else console.log('succesful append to url list');
+  exports.isUrlInList(url, function(exists){
+    if ( !exists ) {
+      fs.appendFile(exports.paths.list, url + '\n', function(err, data) {
+        if (err) console.log(err);
+        else console.log('succesful append to url list');
+      });
+    }
   });
 };
 

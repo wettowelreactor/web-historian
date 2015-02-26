@@ -38,6 +38,11 @@ exports.fourOhFour = function(res) {
   res.end();
 };
 
+exports.threeOhOne = function(res, path) {
+  res.writeHead(301, { Location: path });
+  res.end();
+};
+
 // As you progress, keep thinking about what helper functions you can put here!
 
 
