@@ -10,19 +10,33 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset, web, callback) {
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
-  var path;
-  if (web) {
-    path = archive.paths.siteAssets;
-  } else {
-    path = archive.paths.archivedSites;
-  }
-
+exports.serveAssets = function(res, asset, path) {
+  // readfile which will call
+  fs.readFile(path + '/' + asset, 'utf8', function(err, data){
+    if (err) {
+      res.writeHead(500);
+      res.end();
+      console.log(err);
+    }
+    else {
+      res.writeHead(200, exports.headers);
+      res.write(data, function (){
+        res.end();
+      });
+    }
+  });
 };
 
+exports.fileExists = function(url, path, cb){
+  fs.exists(path + '/' + url, function(exists) {
+    return cb(exists);
+  });
+};
 
+exports.fourOhFour = function(res) {
+  res.writeHead(404);
+  res.end();
+};
 
 // As you progress, keep thinking about what helper functions you can put here!
 

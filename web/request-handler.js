@@ -1,21 +1,36 @@
 var path = require('path');
 var url = require('url');
 var archive = require('../helpers/archive-helpers');
+var helpers = require('./http-helpers');
 // require more modules/folders here!
 
 
 exports.handleRequest = function (req, res) {
-  res.end(archive.paths.list);
-
-  // if it's a get request to the root directory
-    // assign the last portino of the uri before the query string to var "asset"
-    // call helper method passing asset
   var pathname = url.parse(req.url).pathname;
-  if (req.method === 'GET' && pathname.slice(8) === '/archive') {
-    archive.
+  if (req.method === 'GET' && pathname.slice(0, 8) === '/archive') {
+    var resource = pathname.slice(9);
+    helpers.fileExists(resource, archive.paths.archivedSites, function(exists){
+      if (exists) {
+        helpers.serveAssets(res, resource, archive.paths.archivedSites);
+      } else {
+        archive.addUrlToList(resource);
+        helpers.serveAssets(res, 'loading.html', archive.paths.siteAssets);
+      }
+    });
+  } else if (req.method === 'GET' && pathname === '/') {
+    helpers.serveAssets(res, 'index.html', archive.paths.siteAssets);
   } else if (req.method === 'GET') {
-    //handle static req
+    var resource = pathname.slice(1);
+    helpers.fileExists(resource, archive.paths.siteAssets, function(exists){
+      if (exists) {
+        helpers.serveAssets(res, resource, archive.paths.siteAssets);
+      } else {
+        helpers.fourOhFour(res);
+      }
+    });
   } else {
-    //404
+    helpers.fourOhFour(res);
   }
 };
+
+
