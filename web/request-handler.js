@@ -2,6 +2,7 @@ var path = require('path');
 var url = require('url');
 var archive = require('../helpers/archive-helpers');
 var helpers = require('./http-helpers');
+var Q = require('Q');
 // require more modules/folders here!
 
 

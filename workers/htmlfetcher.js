@@ -7,7 +7,7 @@ var _ = require('underscore');
 var htmlFetcher = {
   workingList: [],
   init: function() {
-    archive.readListOfUrls(function(list){
+    archive.readListOfUrls().then(function(list){
       list = list.slice(0, -1);
       this.workingList = list;
       this.writeToFile('', archive.paths.list);
